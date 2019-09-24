@@ -1,0 +1,11 @@
+FROM gradle:jdk8 AS build-env
+COPY . /app
+RUN chmod 777 -R /app
+RUN /app/gradlew build
+
+FROM gcr.io/distroless/java:8
+COPY --from=build-env /app/build/libs/my-application.jar /app/my-application.jar
+WORKDIR /app
+CMD ["my-application.jar"]
+
+EXPOSE 8080
